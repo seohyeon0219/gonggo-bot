@@ -1,0 +1,13 @@
+{
+  "name": "gonggo-bot",
+  "version": "1.0.0",
+  "description": "공공기관 채용공고 디스코드 알림봇 (잡알리오 API)",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "explore": "node explore.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

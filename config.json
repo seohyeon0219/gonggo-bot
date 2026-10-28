@@ -1,0 +1,6 @@
+{
+  "ncs": ["경영·회계·사무"],
+  "regions": ["서울", "인천", "경기"],
+  "employmentTypes": ["인턴"],
+  "urgentDaysThreshold": 3
+}

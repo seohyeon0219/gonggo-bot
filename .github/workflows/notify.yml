@@ -1,0 +1,38 @@
+name: 공고봇 - 채용공고 알림
+
+on:
+  schedule:
+    # KST 08:07 = UTC 23:07 (전날)
+    # 정각(23:00)을 피해 7분 오프셋
+    - cron: '7 23 * * *'
+  workflow_dispatch:  # 수동 실행
+
+permissions:
+  contents: write   # seen.json 자동 커밋에 필요
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 공고봇 실행
+        env:
+          DATA_GO_KR_KEY:      ${{ secrets.DATA_GO_KR_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: node index.js
+
+      - name: seen.json 커밋
+        run: |
+          git config user.name  "gonggobot[bot]"
+          git config user.email "gonggobot@users.noreply.github.com"
+          git add seen.json
+          git diff --staged --quiet || git commit -m "chore: update seen.json [skip ci]"
+          git push
