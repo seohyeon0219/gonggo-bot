@@ -120,7 +120,13 @@ async function fetchAllJobs(apiKey) {
 // ── 필터링 ────────────────────────────────────────────────────────────────────
 
 function matchesConfig(job, config) {
-  const { ncs = [], regions = [], employmentTypes = [] } = config;
+  const { ncs = [], regions = [], employmentTypes = [], excludeKeywords = [] } = config;
+
+  // 제목에 제외 키워드가 있으면 스킵
+  if (excludeKeywords.length > 0) {
+    const title = job.recrutPbancTtl ?? '';
+    if (excludeKeywords.some(kw => title.includes(kw))) return false;
+  }
 
   // API 응답의 ncsCdNmLst는 마침표(.) 구분: "경영.회계.사무"
   // config는 가운뎃점(·) 허용 → 비교 전 · → . 변환
@@ -207,6 +213,8 @@ async function sendToDiscord(jobs, webhookUrl, urgentThreshold) {
     console.log('✅ 새 공고 없음 알림 전송');
     return;
   }
+
+  await postWebhook(webhookUrl, { content: `📢 오늘의 채용 공고는 ${jobs.length}건이에요!` });
 
   const chunks = chunkArray(jobs, 10);
   for (let i = 0; i < chunks.length; i++) {
