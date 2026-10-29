@@ -92,14 +92,14 @@ async function fetchAllJobs(apiKey) {
 
   while (true) {
     const params = new URLSearchParams({
-      serviceKey: apiKey,
-      pageNo:     String(pageNo),
-      numOfRows:  String(numOfRows),
-      _type:      'json',
-      ongoingYn:  'Y',
+      pageNo:    String(pageNo),
+      numOfRows: String(numOfRows),
+      _type:     'json',
+      ongoingYn: 'Y',
     });
 
-    const res = await fetch(`${BASE_URL}?${params}`);
+    // serviceKey는 인코딩 없이 직접 삽입 (공공데이터포털 요구사항)
+    const res = await fetch(`${BASE_URL}?serviceKey=${apiKey}&${params}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
